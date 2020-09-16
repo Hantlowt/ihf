@@ -1,4 +1,4 @@
-from ihf import __init__
+from ihf import ihf
 from datetime import datetime
 
 
@@ -27,5 +27,5 @@ class Todo():
         await self.client.send_render()
 
 
-test = __init__(Todo, 'example.html', jinja=True)
+test = ihf(Todo, 'example.html')
 test.serve()
