@@ -46,7 +46,7 @@ class Client():
 
 
 class ihf():
-    def __init__(self, app, template, jinja=False):
+    def __init__(self, app, template):
         self.app = app
         with open(template) as f:
             self.template = f.read()
