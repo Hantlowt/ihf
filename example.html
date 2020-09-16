@@ -1,0 +1,8 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
+<h2>TodoApp</h2>
+<input id="task"/>${app['error'].length > 0 ? `<span class="label error">${app['error']}</span>` : ''}
+<button onclick="ihf.send('add_task', $('#task').val()); $('#task').val('')">Add</button>
+<div>
+    ${app['tasks'].map((t,i) => `<p>${t.name}</p><p>Created at ${t.time}</p>
+    <button onclick="ihf.send('delete_task', ${i})">Delete</button>`).join('<hr>')}
+</div>
