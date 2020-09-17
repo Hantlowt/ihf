@@ -12,19 +12,18 @@ def rgetattr(obj, attr=None):
     if isinstance(value, list):
         return [rgetattr(i) for i in value]
     if isinstance(value, dict):
-        return {i: rgetattr(i) for i in value.keys()}
+        return {i: rgetattr(i) for i in value.keys() if not i.startswith('__')}
     if hasattr(value, '__dict__'):
-        return {i: rgetattr(value, i) for i in vars(value).keys()}
+        return {i: rgetattr(value, i) for i in vars(value).keys() if not i.startswith('_')}
     return value
 
 
 class Client():
-    def __init__(self, websocket, template, app, attributes):
+    def __init__(self, websocket, template, app):
         self.websocket = websocket
         self.template = template
         self.app = app(self)
         self.firstRun = True
-        self.attributes = attributes
 
     async def send_render(self):
         data = rgetattr(self.app)
@@ -55,13 +54,9 @@ class ihf():
         with open(template) as f:
             self.template = f.read()
             f.close()
-        self.attributes = self.template.split("app['")
-        self.attributes.pop(0)
-        self.attributes = [a.split("']")[0] for a in self.attributes]
-        self.attributes = list(dict.fromkeys(self.attributes))
 
     async def parse(self, websocket, path):
-        client = Client(websocket, self.template, self.app, self.attributes)
+        client = Client(websocket, self.template, self.app)
         while (True):
             try:
                 await client.recv()
