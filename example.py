@@ -2,15 +2,15 @@ from ihf import ihf
 from datetime import datetime
 
 
-class Task():
+class Task:
     def __init__(self, name):
         self.name = name
         self.time = datetime.now().strftime("%H:%M:%S")
 
 
-class Todo():
+class Todo:
     def __init__(self, client):
-        self.tasks = []
+        self.tasks = [Task('coucou')]
         self.client = client
         self.error = ''
 

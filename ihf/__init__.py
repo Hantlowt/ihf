@@ -1,18 +1,21 @@
 import asyncio
 import websockets
 import json
-import functools
 
 
-def rgetattr(obj, attr, *args):
-    def _getattr(obj, attr):
-        a = getattr(obj, attr, *args)
-        if isinstance(a, list):
-            return [dict(vars(i)) if hasattr(i, '__dict__') else i for i in a]
-        else:
-            return a
-
-    return functools.reduce(_getattr, [obj] + attr.split('.'))
+def rgetattr(obj, attr=None):
+    value = obj
+    if type(attr) == str and hasattr(obj, '__dict__'):
+        value = getattr(obj, attr)
+    if type(value) == Client:
+        return None
+    if isinstance(value, list):
+        return [rgetattr(i) for i in value]
+    if isinstance(value, dict):
+        return {i: rgetattr(i) for i in value.keys()}
+    if hasattr(value, '__dict__'):
+        return {i: rgetattr(value, i) for i in vars(value).keys()}
+    return value
 
 
 class Client():
@@ -24,7 +27,8 @@ class Client():
         self.attributes = attributes
 
     async def send_render(self):
-        data = {a: rgetattr(self.app, a) for a in self.attributes}
+        data = rgetattr(self.app)
+        print(data)
         if self.firstRun:
             data['template'] = self.template
         data = json.dumps(data)
