@@ -27,5 +27,5 @@ class Todo:
         await self._client.send_render()
 
 
-test = ihf(Todo, 'example.html')
+test = ihf(Todo, 'example_template.html')
 test.serve()

@@ -1,6 +1,30 @@
 import asyncio
 import websockets
 import json
+import re
+
+
+def open_template(template):
+    with open(template) as f:
+        result = f.read()
+        f.close()
+    result = re.sub('(?<={%)(.*)(?=%})', lambda x: open_template(x.group()), result)
+    result = result.replace('{%', '').replace('%}', '')
+    return result
+
+
+async def update_property(obj, attr, function, *args, client=None, sleep=1):
+    while True:
+        setattr(obj, attr, function(*args))
+        if client is not None:
+            await client.send_render()
+        await asyncio.sleep(sleep)
+
+
+async def automatic_refresh(client, sleep=1):
+    while True:
+        await client.send_render()
+        await asyncio.sleep(sleep)
 
 
 def rgetattr(obj, attr=None):
@@ -12,7 +36,7 @@ def rgetattr(obj, attr=None):
     if isinstance(value, list):
         return [rgetattr(i) for i in value]
     if isinstance(value, dict):
-        return {i: rgetattr(i) for i in value.keys() if not i.startswith('__')}
+        return {i: rgetattr(i) for i in value.keys() if not i.startswith('_')}
     if hasattr(value, '__dict__'):
         return {i: rgetattr(value, i) for i in vars(value).keys() if not i.startswith('_')}
     return value
@@ -24,21 +48,23 @@ class Client():
         self.template = template
         self.app = app(self)
         self.firstRun = True
+        self.previous_data = {}
 
-    async def send_render(self):
+    async def send_render(self, force=False):
         data = rgetattr(self.app)
-        print(data)
         if self.firstRun:
             data['template'] = self.template
         data = json.dumps(data)
-        await self.websocket.send(str(data))
+        if force or (data != self.previous_data):
+            self.previous_data = data
+            await self.websocket.send(str(data))
 
     async def recv(self):
         message = await self.websocket.recv()
         try:
             message = eval(message)
             print(message)
-            if not message[0].startswith('__') and message[0] in dir(self.app):
+            if not message[0].startswith('_') and message[0] in dir(self.app):
                 f = getattr(self.app, message[0])
                 await f(*message[1:])
         except Exception as e:
@@ -49,11 +75,9 @@ class Client():
 
 
 class ihf():
-    def __init__(self, app, template):
+    def __init__(self, app, template_name):
         self.app = app
-        with open(template) as f:
-            self.template = f.read()
-            f.close()
+        self.template = open_template(template_name)
 
     async def parse(self, websocket, path):
         client = Client(websocket, self.template, self.app)

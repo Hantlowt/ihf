@@ -1,0 +1,4 @@
+<div>
+    ${app.tasks.map((t,i) => `<p>${t.name}</p><p>Created at ${t.time}</p>
+    <button onclick="ihf.send('delete_task', ${i})">Delete</button>`).join('<hr>')}
+</div>
