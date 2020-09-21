@@ -46,27 +46,33 @@ class Client():
     def __init__(self, websocket, template, app):
         self.websocket = websocket
         self.template = template
-        self.app = app(self)
+        self.app = app
         self.firstRun = True
-        self.previous_data = {}
+        self.previous_send = {}
+        self.cookie = {}
 
     async def send_render(self, force=False):
-        data = rgetattr(self.app)
+        to_send = {'data': rgetattr(self.app), 'cookie': self.cookie}
         if self.firstRun:
-            data['template'] = self.template
-        data = json.dumps(data)
-        if force or (data != self.previous_data):
-            self.previous_data = data
-            await self.websocket.send(str(data))
+            to_send['template'] = self.template
+        to_send = json.dumps(to_send)
+        if force or (to_send != self.previous_send):
+            self.previous_send = to_send
+            await self.websocket.send(str(to_send))
 
     async def recv(self):
         message = await self.websocket.recv()
         try:
-            message = eval(message)
-            print(message)
-            if not message[0].startswith('_') and message[0] in dir(self.app):
-                f = getattr(self.app, message[0])
-                await f(*message[1:])
+            if self.firstRun:
+                if len(message) > 0:
+                    self.cookie = {c.split('=')[0]: c.split('=')[1] for c in message.split(';') if '=' in c}
+                self.app = self.app(self)
+            else:
+                message = eval(message)
+                print(message)
+                if not message[0].startswith('_') and message[0] in dir(self.app):
+                    f = getattr(self.app, message[0])
+                    await f(*message[1:])
         except Exception as e:
             print(e)
         if self.firstRun:
@@ -81,7 +87,7 @@ class ihf():
 
     async def parse(self, websocket, path):
         client = Client(websocket, self.template, self.app)
-        while (True):
+        while True:
             try:
                 await client.recv()
             except Exception as e:

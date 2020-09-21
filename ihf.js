@@ -1,25 +1,27 @@
 IHF = function(addr) {
     this.socket = new WebSocket(addr);
     this.socket.firstConnection = true;
-    this.socket.onopen = function (event) { this.send('hello') }
+    this.socket.onopen = function (event) { this.send(document.cookie) }
     this.socket.onerror = function (event) { console.log(event); }
     this.socket.onmessage = function (event) {
         console.log(event.data)
-        data_received = JSON.parse(event.data)
+        received = JSON.parse(event.data)
+        for (c in received.cookie) {
+            document.cookie = c+'='+received.cookie[c]
+        }
         if (this.firstConnection) {
-            console.log(data_received)
-            template_received = Function.apply(null, ['app', 'return `' + data_received.template +'`'])
-            console.log(data_received)
+            console.log(received.data)
+            template_f = Function.apply(null, ['app', 'return `' + received.template +'`'])
             this.app = new Reef('html', {
-                data: data_received,
-                template: template_received
+                data: received.data,
+                template: template_f
             });
             this.app.render();
             this.firstConnection = false;
         }
         else
         {
-            this.app.data = data_received
+            this.app.data = received.data
         }
     }
     this.socket.onclose = function (event) { console.log("Server disconnected"); }
