@@ -36,7 +36,7 @@ def rgetattr(obj, attr=None):
     if isinstance(value, list):
         return [rgetattr(i) for i in value]
     if isinstance(value, dict):
-        return {i: rgetattr(i) for i in value.keys() if not i.startswith('_')}
+        return {i: rgetattr(value[i]) for i in value.keys() if not i.startswith('_')}
     if hasattr(value, '__dict__'):
         return {i: rgetattr(value, i) for i in vars(value).keys() if not i.startswith('_')}
     return value
