@@ -2,6 +2,7 @@ import asyncio
 import websockets
 import json
 import re
+import inspect
 
 
 def open_template(template):
@@ -69,10 +70,17 @@ class Client():
                 self.app = self.app(self)
             else:
                 message = eval(message)
-                print(message)
-                if not message[0].startswith('_') and message[0] in dir(self.app):
-                    f = getattr(self.app, message[0])
+                objs = message[0].split('.')
+                o = self.app
+                while len(objs) > 0:
+                    if not objs[0].startswith('_') and objs[0] in dir(o):
+                        f = getattr(o, objs[0])
+                        o = getattr(o, objs.pop(0))
+                if inspect.iscoroutinefunction(f):
                     await f(*message[1:])
+                else:
+                    f(*message[1:])
+                    await self.send_render()
         except Exception as e:
             print(e)
         if self.firstRun:
