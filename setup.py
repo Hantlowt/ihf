@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="ihf",
-    version="0.0.2",
+    version="0.0.3",
     description="ihf",
     long_description="i hate front and api, really",
     url="https://github.com/Hantlowt/ihf",
