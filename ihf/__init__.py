@@ -4,6 +4,7 @@ import json
 import re
 import inspect
 from bs4 import BeautifulSoup as bs
+import html
 
 
 def open_template(template):
@@ -15,15 +16,17 @@ def open_template(template):
     return result
 
 
-def convert_for(content, attr):
-    attr = attr.split('in')
-    var = attr[0].strip()
-    list = attr[1].strip()
-    result = '${' + list + '.map((' + var + ') => `' + content + '`).join(\'\')}'
+def convert_for(full, attr):
+    attr_split = attr.split('in')
+    var = attr_split[0].strip()
+    list = attr_split[1].strip()
+    full = full.replace('for="'+html.escape(attr)+'"', '')
+    result = '${' + list + '.map((' + var + ') => `' + full + '`).join(\'\')}'
     return result
 
 
 def convert_if(full, attr):
+    full = full.replace('if="'+html.escape(attr)+'"', '')
     result = '${' + attr + ' ? `' + full + '` : \'\'}'
     return result
 
@@ -46,9 +49,10 @@ def convert_template(template):
             result = result.replace(full, convert_if(full, t.attrs['if']))
         if 'for' in t.attrs.keys():
             full = str(t)
-            start, content, end = split_html_tag(full)
-            result = result.replace(full, start + convert_for(content, t.attrs['for']) + end)
+            #start, content, end = split_html_tag(full)
+            result = result.replace(full, convert_for(full, t.attrs['for']))
     return result
+
 
 async def update_property(obj, attr, function, *args, client=None, sleep=1):
     while True:
