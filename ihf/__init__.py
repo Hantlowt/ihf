@@ -38,7 +38,7 @@ def split_html_tag(full):
 
 def convert_template(template):
     result = template
-    soup = bs(result)
+    soup = bs(result, features="lxml")
     result = str(soup)
     for t in soup.html.find_all(recursive=True):
         if 'if' in t.attrs.keys():
@@ -48,9 +48,7 @@ def convert_template(template):
             full = str(t)
             start, content, end = split_html_tag(full)
             result = result.replace(full, start + convert_for(content, t.attrs['for']) + end)
-    print(result)
     return result
-
 
 async def update_property(obj, attr, function, *args, client=None, sleep=1):
     while True:
@@ -114,11 +112,12 @@ class Client():
                     if not objs[0].startswith('_') and objs[0] in dir(o):
                         f = getattr(o, objs[0])
                         o = getattr(o, objs.pop(0))
-                if inspect.iscoroutinefunction(f):
-                    await f(*message[1:])
-                else:
-                    f(*message[1:])
-                    await self.send_render()
+                if message[0] in self.template:
+                    if inspect.iscoroutinefunction(f):
+                        await f(*message[1:])
+                    else:
+                        f(*message[1:])
+                        await self.send_render()
         except Exception as e:
             print(e)
         if self.firstRun:
