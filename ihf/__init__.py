@@ -143,7 +143,7 @@ class ihf():
                 print(e)
                 break
 
-    def serve(self, address="localhost", port=8765):
-        start_server = websockets.serve(self.parse, address, port)
+    def serve(self, address="localhost", port=8765, ssl_context=None):
+        start_server = websockets.serve(self.parse, address, port, ssl=ssl_context)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()
