@@ -1,7 +1,8 @@
 <html>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic">
 <h2>TodoApp</h2>
-<input id="task"/>${app.error.length > 0 ? `<span class="label error">${app.error}</span>` : ''}
+<input id="task"/>
+<span class="label error" if="app.error.length > 0">${app.error}</span>
 <button onclick="ihf.send('add_task', $('#task').val()); $('#task').val('')">Add</button>
 {%tasks.html%}
 </html>

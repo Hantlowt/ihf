@@ -3,6 +3,7 @@ import websockets
 import json
 import re
 import inspect
+from bs4 import BeautifulSoup as bs
 
 
 def open_template(template):
@@ -11,6 +12,43 @@ def open_template(template):
         f.close()
     result = re.sub('(?<={%)(.*)(?=%})', lambda x: open_template(x.group()), result)
     result = result.replace('{%', '').replace('%}', '')
+    return result
+
+
+def convert_for(content, attr):
+    attr = attr.split('in')
+    var = attr[0].strip()
+    list = attr[1].strip()
+    result = '${' + list + '.map((' + var + ') => `' + content + '`).join(\'\')}'
+    return result
+
+
+def convert_if(full, attr):
+    result = '${' + attr + ' ? `' + full + '` : \'\'}'
+    return result
+
+
+def split_html_tag(full):
+    start = full[:full.index('>') + 1]
+    full_reverse = full[::-1]
+    end = full_reverse[:full_reverse.index('<') + 1][::-1]
+    content = full.replace(start, '').replace(end, '')
+    return start, content, end
+
+
+def convert_template(template):
+    result = template
+    soup = bs(result)
+    result = str(soup)
+    for t in soup.html.find_all(recursive=True):
+        if 'if' in t.attrs.keys():
+            full = str(t)
+            result = result.replace(full, convert_if(full, t.attrs['if']))
+        if 'for' in t.attrs.keys():
+            full = str(t)
+            start, content, end = split_html_tag(full)
+            result = result.replace(full, start + convert_for(content, t.attrs['for']) + end)
+    print(result)
     return result
 
 
@@ -91,7 +129,7 @@ class Client():
 class ihf():
     def __init__(self, app, template_name):
         self.app = app
-        self.template = open_template(template_name)
+        self.template = convert_template(open_template(template_name))
 
     async def parse(self, websocket, path):
         client = Client(websocket, self.template, self.app)
