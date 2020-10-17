@@ -7,5 +7,6 @@ setuptools.setup(
     long_description="i hate front and api, really",
     url="https://github.com/Hantlowt/ihf",
     packages=setuptools.find_packages(),
-    py_modules=['ihf']
+    py_modules=['ihf'],
+    install_requires=['websockets', 'bs4']
 )
