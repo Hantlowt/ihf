@@ -2,11 +2,11 @@ import setuptools
 
 setuptools.setup(
     name="ihf",
-    version="0.0.4",
+    version="0.0.6",
     description="ihf",
-    long_description="i hate front and api, really",
+    long_description="I Hate Front and API. IHF is a library for create quickly and easily secure webapp",
     url="https://github.com/Hantlowt/ihf",
     packages=setuptools.find_packages(),
     py_modules=['ihf'],
-    install_requires=['websockets', 'bs4']
+    install_requires=['websockets', 'bs4', 'singleton_decorator']
 )

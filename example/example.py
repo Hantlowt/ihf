@@ -1,5 +1,6 @@
 from ihf import ihf
 from datetime import datetime
+from singleton_decorator import singleton
 
 
 class Task:
@@ -10,7 +11,7 @@ class Task:
 
 class Todo:
     def __init__(self, client):
-        self.tasks = []
+        self.tasks = client.session.get_data('tasks', [])
         self.error = ''
         self._client = client
 
