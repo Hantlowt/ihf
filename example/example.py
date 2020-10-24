@@ -1,6 +1,5 @@
 from ihf import ihf
 from datetime import datetime
-from singleton_decorator import singleton
 
 
 class Task:
@@ -23,9 +22,8 @@ class Todo:
             self.error = 'Please enter a task'
         await self._client.send_render()
 
-    async def delete_task(self, index):
+    def delete_task(self, index):
         self.tasks.pop(index)
-        await self._client.send_render()
 
 
 test = ihf(Todo, 'example_template.html')

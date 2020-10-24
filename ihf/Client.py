@@ -46,7 +46,6 @@ class Client:
                 self.session = self.sessions_manager.get_session(self.cookie.get('sessionId'))
                 self.cookie['sessionId'] = self.session.id
                 self.app = self.app(self)
-                print(self.cookie)
             else:
                 message = eval(message)
                 objs = message[0].split('.')
