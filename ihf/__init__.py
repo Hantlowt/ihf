@@ -32,7 +32,6 @@ class ihf:
                 await client.recv()
             except Exception as e:
                 del client
-                print(e)
                 break
 
     def serve(self, host="localhost", port=8765, ssl_context=None):

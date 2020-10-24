@@ -19,14 +19,12 @@ def convert_for(full, attr):
     list = attr_split[1].strip()
     full = full.replace('for="' + html.escape(attr) + '"', '')
     result = '${' + list + '.map((' + var + ') => `' + full + '`).join(\'\')}'
-    print(result)
     return result
 
 
 def convert_if(full, attr):
     full = full.replace('if="' + html.escape(attr) + '"', '')
     result = '${' + attr + ' ? `' + full + '` : \'\'}'
-    print(result)
     return result
 
 
@@ -49,5 +47,4 @@ def convert_template(template):
             full = str(t)
             # start, content, end = split_html_tag(full)
             result = result.replace(full, convert_for(full, t.attrs['for']))
-    print(result)
     return result
