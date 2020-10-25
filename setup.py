@@ -8,5 +8,6 @@ setuptools.setup(
     url="https://github.com/Hantlowt/ihf",
     packages=setuptools.find_packages(),
     py_modules=['ihf'],
-    install_requires=['websockets', 'bs4']
+    install_requires=['websockets', 'bs4'],
+    include_package_data=True
 )
