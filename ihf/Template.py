@@ -38,7 +38,7 @@ def split_html_tag(full):
 
 def convert_template(template):
     soup = bs(template, features="lxml")
-    result = str(soup)
+    result = str(soup).replace('{{', '${').replace('}}', '}')
     for t in soup.html.find_all(recursive=True):
         if 'if' in t.attrs.keys():
             full = str(t)

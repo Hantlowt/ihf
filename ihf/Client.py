@@ -6,14 +6,13 @@ def rgetattr(obj, attr=None):
     value = obj
     if type(attr) == str and hasattr(obj, '__dict__'):
         value = getattr(obj, attr)
-    if type(value) == Client:
-        return None
     if isinstance(value, list):
         return [rgetattr(i) for i in value]
     if isinstance(value, dict):
         return {i: rgetattr(value[i]) for i in value.keys() if not i.startswith('_')}
     if hasattr(value, '__dict__'):
-        return {i: rgetattr(value, i) for i in vars(value).keys() if not i.startswith('_')}
+        return {i: rgetattr(value, i) for i in vars(value).keys() if not i.startswith('_')
+                and type(getattr(value, i)) != Client}
     return value
 
 
