@@ -17,7 +17,7 @@ def rgetattr(obj, attr=None):
 
 
 class Client:
-    def __init__(self, websocket, template, app, sessions_manager):
+    def __init__(self, websocket, template, app, sessions_manager, file_manager):
         self.websocket = websocket
         self.template = template
         self.app = app
@@ -25,6 +25,7 @@ class Client:
         self.previous_send = {}
         self.cookie = {}
         self.sessions_manager = sessions_manager
+        self.file_manager = file_manager
         self.session = None
 
     async def send_render(self, force=False):
