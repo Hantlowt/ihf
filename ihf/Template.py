@@ -17,13 +17,13 @@ def convert_for(full, attr):
     attr_split = attr.split('in')
     var = attr_split[0].strip()
     list = attr_split[1].strip()
-    full = full.replace('for="' + html.unescape(attr) + '"', '')
+    full = full.replace('for="' + html.escape(attr) + '"', '')
     result = '${' + list + '.map((' + var + ') => `' + full + '`).join(\'\')}'
     return result
 
 
 def convert_if(full, attr):
-    full = full.replace('if="' + html.unescape(attr) + '"', '')
+    full = full.replace('if="' + html.escape(attr) + '"', '')
     result = '${' + attr + ' ? `' + full + '` : \'\'}'
     return result
 
