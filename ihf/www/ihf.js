@@ -24,7 +24,7 @@ IHF = function(addr) {
             this.app.data = received.data
         }
     }
-    this.socket.onclose = function (event) { console.log("Server disconnected"); }
+    this.socket.onclose = function (event) { console.log("Server disconnected"); document.location.reload(true); }
   }
 IHF.prototype.send = function(f) {
     var args = Array.from(arguments);
