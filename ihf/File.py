@@ -25,6 +25,8 @@ class FileManager:
         temp_folder_path = f'{path_to_general_folder}/temp'
         private_temp_folder_path = f'{temp_folder_path}/private'
         private_folder_path = f'{path_to_general_folder}/private'
+        if not os.path.exists(path_to_general_folder):
+            os.mkdir(path_to_general_folder)
         if os.path.exists(temp_folder_path):
             shutil.rmtree(temp_folder_path)
         os.mkdir(temp_folder_path)
