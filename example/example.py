@@ -23,6 +23,14 @@ class Todo:
     def delete_task(self, index):
         self.tasks.pop(index)
 
+    def file_to_tasks(self, file):
+        f = file.open(mode='r')
+        tasks = f.readlines()
+        for t in tasks:
+            self.add_task(t)
+        f.close()
+        file.remove()
+
 
 test = Ihf(Todo, 'example_template.html', host='localhost', port=1910)
 test.serve()

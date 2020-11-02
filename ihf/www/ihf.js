@@ -29,4 +29,14 @@ IHF = function(addr) {
 IHF.prototype.send = function(f) {
     var args = Array.from(arguments);
     this.socket.send(JSON.stringify(args));
+}
+
+IHF.prototype.sendFile = function(f, id) {
+    var file = document.getElementById(id).files[0]
+    var reader = new FileReader()
+    reader.onloadend = c => {
+        var to_send = [f, file.name, c.target.result];
+        this.socket.send('file:'+JSON.stringify(to_send));
     }
+    reader.readAsDataURL(file);
+}

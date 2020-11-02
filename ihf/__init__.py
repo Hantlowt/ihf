@@ -44,10 +44,10 @@ class Ihf:
                 del client
                 break
 
-    def serve(self):
+    def serve(self, max_size=int(5e+7)):
         handler = functools.partial(self.httpProcess.process_request, os.getcwd())
         start_server = websockets.serve(self.parse, self.host, self.port,
-                                        ssl=self.ssl_context, process_request=handler)
+                                        ssl=self.ssl_context, process_request=handler, max_size=max_size)
         print(f'SERVER RUNNING ON {self.full_url}')
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()

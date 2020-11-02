@@ -16,7 +16,9 @@ class HttpProcess:
 
         if "Upgrade" in request_headers:
             return  # Probably a WebSocket connection
-
+        is_download = True if path.endswith('?download') else False
+        if is_download:
+            path = path.replace('?download', '')
         if path == '/':
             path = '/index.html'
 
@@ -41,7 +43,7 @@ class HttpProcess:
                 return HTTPStatus.NOT_FOUND, [], b'404 NOT FOUND'
 
         extension = full_path.split(".")[-1]
-        mime_type = mimetypes.types_map.get('.' + extension, "application/octet-stream")
+        mime_type = "application/octet-stream" if is_download else mimetypes.types_map.get('.' + extension, "application/octet-stream")
         response_headers.append(('Content-Type', mime_type))
 
         # Read the whole file into memory and send it out

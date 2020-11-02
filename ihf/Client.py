@@ -1,5 +1,6 @@
 import inspect
 import json
+import base64
 
 
 def rgetattr(obj, attr=None):
@@ -47,7 +48,15 @@ class Client:
                 self.cookie['sessionId'] = self.session.id
                 self.app = self.app(self)
             else:
-                message = eval(message)
+                if message.startswith('file:'):
+                    message = eval(message.replace('file:', ''))
+                    file = self.file_manager.get_new_file(message[1], folder=self.session.id, is_temp=True, is_private=True)
+                    o = file.open(mode='wb')
+                    o.write(base64.urlsafe_b64decode(message[2].split('base64,')[1]))
+                    o.close()
+                    message = [message[0], file]
+                else:
+                    message = eval(message)
                 objs = message[0].split('.')
                 o = self.app
                 while len(objs) > 0:
