@@ -40,3 +40,12 @@ IHF.prototype.sendFile = function(f, id) {
     }
     reader.readAsDataURL(file);
 }
+
+IHF.prototype.sendForm = function(f) {
+    var args = Array.from(arguments);
+    for (i = 1; i < args.length; i++) {
+        id = '#'+args[i]
+        args[i] = $(id).val()
+    }
+    this.socket.send(JSON.stringify(args));
+}

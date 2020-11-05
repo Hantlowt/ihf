@@ -6,6 +6,6 @@
 <p></p>
 <input id="task"/>
 <span class="label error" if="app.error.length > 0">${app.error}</span>
-<button onclick="ihf.send('add_task', $('#task').val()); $('#task').val('')">Add</button>
+<button onclick="ihf.sendForm('add_task', 'task'); $('#task').val('')">Add</button>
 {%tasks.html%}
 </html>
