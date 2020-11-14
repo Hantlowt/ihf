@@ -14,7 +14,7 @@ def open_template(template):
 
 
 def convert_for(full, attr):
-    attr_split = attr.split('in')
+    attr_split = attr.split(' in ')
     var = attr_split[0].strip()
     list = attr_split[1].strip()
     full = full.replace('for="' + html.escape(attr) + '"', '')
