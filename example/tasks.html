@@ -1,4 +1,4 @@
 <div for="t,i in app.tasks">
-    <p>${t.name}</p><p>Created at ${t.time}</p>
-    <button onclick="ihf.send('delete_task', ${i})">Delete</button>
+    <p>{{t.name}}</p><p>Created at {{t.time}}</p>
+    <button onclick="ihf.send('delete_task', {{i}})">Delete</button>
 </div>

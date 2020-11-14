@@ -23,11 +23,15 @@ IHF = function(addr) {
         {
             this.app.data = received.data
         }
+        this.loading = $(".loading")
+        this.loading.clearQueue().hide(0)
     }
     this.socket.onclose = function (event) { console.log("Server disconnected"); document.location.reload(true); }
   }
 IHF.prototype.send = function(f) {
     var args = Array.from(arguments);
+    this.socket.loading.delay(500).show(0);
+    //$(".loading").show(1000)
     this.socket.send(JSON.stringify(args));
 }
 
@@ -36,6 +40,7 @@ IHF.prototype.sendFile = function(f, id) {
     var reader = new FileReader()
     reader.onloadend = c => {
         var to_send = [f, file.name, c.target.result];
+        this.socket.loading.show(0);
         this.socket.send('file:'+JSON.stringify(to_send));
     }
     reader.readAsDataURL(file);
@@ -47,5 +52,6 @@ IHF.prototype.sendForm = function(f) {
         id = '#'+args[i]
         args[i] = $(id).val()
     }
+    this.socket.loading.delay(500).show(0);
     this.socket.send(JSON.stringify(args));
 }

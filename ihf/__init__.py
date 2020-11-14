@@ -24,9 +24,11 @@ async def automatic_refresh(client, sleep=1):
 
 
 class Ihf:
-    def __init__(self, app, template_name, host="localhost", port=8765, ssl_context=None):
+    def __init__(self, app, template_name, host="localhost", port=8765, ssl_context=None, loading_indicator=True):
         self.app = app
         self.template = open_template(template_name)
+        if loading_indicator:
+            self.template = '<link rel="stylesheet" href="loading.css"><div class="loading" style="display: None"></div>' + self.template
         self.sessions_manager = SessionManager()
         self.host = host
         self.port = port

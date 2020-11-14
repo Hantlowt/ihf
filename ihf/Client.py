@@ -60,9 +60,12 @@ class Client:
                 objs = message[0].split('.')
                 o = self.app
                 while len(objs) > 0:
+                    temp = objs
                     if not objs[0].startswith('_') and objs[0] in dir(o):
                         f = getattr(o, objs[0])
                         o = getattr(o, objs.pop(0))
+                    if objs == temp and len(objs) > 0:
+                        raise Exception('Problem with message', message)
                 if message[0] in self.template:
                     if inspect.iscoroutinefunction(f):
                         await f(*message[1:])
@@ -71,6 +74,7 @@ class Client:
                         await self.send_render()
         except Exception as e:
             print(e)
+            await self.websocket.close()
         if self.firstRun:
             await self.send_render()
             self.firstRun = False
