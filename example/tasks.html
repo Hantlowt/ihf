@@ -1,4 +1,4 @@
-<div for="task,index in app.tasks">
+<div foreach="task,index in app.tasks">
     <p>{{task.name}}</p><p>Created at {{task.time}}</p>
     <button onclick="ihf.send('delete_task', {{index}})">Delete</button>
 </div>

@@ -18,7 +18,7 @@ def convert_for(full, attr):
     attr_split = attr.split(' in ')
     var = attr_split[0].strip()
     list = attr_split[1].strip()
-    full = full.replace('for="' + html.escape(attr) + '"', '')
+    full = full.replace('foreach="' + html.escape(attr) + '"', '')
     result = '${' + list + '.map((' + var + ') => `' + full + '`).join(\'\')}'
     return result
 
@@ -48,5 +48,5 @@ def convert_template(template):
         if 'for' in t.attrs.keys():
             full = str(t)
             # start, content, end = split_html_tag(full)
-            result = result.replace(full, convert_for(full, t.attrs['for']))
+            result = result.replace(full, convert_for(full, t.attrs['foreach']))
     return result
