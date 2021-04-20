@@ -45,7 +45,7 @@ def convert_template(template):
         if 'if' in t.attrs.keys():
             full = str(t)
             result = result.replace(full, convert_if(full, t.attrs['if']))
-        if 'for' in t.attrs.keys():
+        if 'foreach' in t.attrs.keys():
             full = str(t)
             # start, content, end = split_html_tag(full)
             result = result.replace(full, convert_for(full, t.attrs['foreach']))
