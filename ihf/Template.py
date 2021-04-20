@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup as bs
 import html
+from os import path
 
 
 def open_template(template):
@@ -8,7 +9,7 @@ def open_template(template):
         result = f.read()
         f.close()
     result = convert_template(result)
-    result = re.sub('(?<={%)(.*)(?=%})', lambda x: open_template(x.group()), result)
+    result = re.sub('(?<={%)(.*)(?=%})', lambda x: open_template(x.group()) if path.exists(x.group()) else open_template(path.dirname(path.realpath(template))+'/'+x.group()), result)
     result = result.replace('{%', '').replace('%}', '')
     return result
 
