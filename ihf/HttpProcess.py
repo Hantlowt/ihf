@@ -48,9 +48,11 @@ class HttpProcess:
         response_headers.append(('Content-Type', mime_type))
 
         # Read the whole file into memory and send it out
-        body = open(full_path, 'rb').read()
         if extension in ['html', 'htm']:
-            body = bytes(str(body).replace('{host}', self.host).replace('{port}', str(self.port)), encoding='UTF-8')
+            body = open(full_path, 'r').read()
+            body = body.replace('{host}', self.host).replace('{port}', str(self.port))
+        else:
+            body = open(full_path, 'rb').read()
         response_headers.append(('Content-Length', str(len(body))))
         print("HTTP GET {} 200 OK".format(path))
         return HTTPStatus.OK, response_headers, body
