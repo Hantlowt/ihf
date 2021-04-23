@@ -33,13 +33,12 @@ class HttpProcess:
         if "/private/" in full_path:
             print("HTTP GET {} 403 FORBIDDEN".format(path))
             return HTTPStatus.FORBIDDEN, [], b'403 FORBIDDEN'
-
+        if os.path.isdir(full_path):
+            full_path += '/index.html'
         # Validate the path
         if os.path.commonpath((sever_root, full_path)) != sever_root or \
                 not os.path.exists(full_path) or not os.path.isfile(full_path):
             full_path = self.path_if_not_found + '/' + path[1:]
-            if os.path.isdir(full_path):
-                full_path += '/index.html'
             if not os.path.isfile(full_path):
                 print("HTTP GET {} 404 NOT FOUND".format(path))
                 return HTTPStatus.NOT_FOUND, [], b'404 NOT FOUND'
