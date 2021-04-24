@@ -50,7 +50,7 @@ class HttpProcess:
         # Read the whole file into memory and send it out
         if extension in ['html', 'htm']:
             body = open(full_path, 'r').read()
-            body = bytes(body.replace('{host}', self.host).replace('{port}', str(self.port)))
+            body = bytes(body.replace('{host}', self.host).replace('{port}', str(self.port)), encoding='utf8')
         else:
             body = open(full_path, 'rb').read()
         response_headers.append(('Content-Length', str(len(body))))
