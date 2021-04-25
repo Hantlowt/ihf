@@ -1,6 +1,7 @@
 import inspect
 import json
 import base64
+import traceback
 
 
 def rgetattr(obj, attr=None):
@@ -73,7 +74,7 @@ class Client:
                         f(*message[1:])
                         await self.send_render()
         except Exception as e:
-            print(e)
+            print(traceback.format_exc())
             await self.websocket.close()
         if self.firstRun:
             await self.send_render()
