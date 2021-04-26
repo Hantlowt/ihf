@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="ihf",
-    version="0.2.7",
+    version="0.2.8",
     description="ihf",
     long_description="I Hate Front and API. IHF is a library for create quickly and easily real-time secure webapp",
     url="https://github.com/Hantlowt/ihf",
