@@ -35,9 +35,10 @@ class Client:
         if self.firstRun:
             to_send['template'] = self.template
         to_send = json.dumps(to_send)
-        if force or (to_send != self.previous_send):
-            self.previous_send = to_send
-            await self.websocket.send(str(to_send))
+        #if force or (to_send != self.previous_send):
+        #    self.previous_send = to_send
+        #    await self.websocket.send(str(to_send))
+        await self.websocket.send(str(to_send))
 
     async def recv(self):
         message = await self.websocket.recv()
